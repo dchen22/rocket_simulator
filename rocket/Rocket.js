@@ -6,8 +6,8 @@ export class Rocket {
         this.velocity = {x: 0, y: 0};
         this.accelerationCoefficient = {x: 0.99, y: 0.99};
         this.turnOrientation = 0;
-        this.turnOrientationVelocity = 0;
-        this.turnOrientationAccelerationCoefficient = 0.9;
+        this.turnOrientationVelocity = 0.0002;
+        this.turnOrientationAccelerationCoefficient = 0.99;
     }
 
     display() {
@@ -15,13 +15,28 @@ export class Rocket {
         // rocketImage.src = '../rocket/rocket.png';
         // ctx.drawImage(rocketImage, ORI_X(0) - rocketImage.clientWidth/2, ORI_Y(0) - rocketImage.clientHeight/2);
 
-        ctx.fillStyle = 'white';
-        ctx.strokeStyle = 'red';
-        ctx.lineWidth = 5;
-        ctx.beginPath(); 
-        ctx.arc(ORI_X(0), ORI_Y(0), 40, 0, 2 * Math.PI);
+        // Set the center of the canvas as (0, 0)
+        const centerX = ORI_X(0);
+        const centerY = ORI_Y(0);
+
+        // Draw the rocket body
+        ctx.fillStyle = 'gray';
+        ctx.beginPath();
+        ctx.moveTo(centerX - 10, centerY + 20);
+        ctx.lineTo(centerX + 10, centerY + 20);
+        ctx.lineTo(centerX + 10, centerY - 20);
+        ctx.lineTo(centerX - 10, centerY - 20);
+        ctx.closePath();
         ctx.fill();
-        ctx.stroke();
+
+        // Draw the rocket tip
+        ctx.fillStyle = 'red';
+        ctx.beginPath();
+        ctx.moveTo(centerX - 10, centerY - 20);
+        ctx.lineTo(centerX + 10, centerY - 20);
+        ctx.lineTo(centerX, centerY - 40);
+        ctx.closePath();
+        ctx.fill();
     }
 
     accelerateUp(spaceObjects) {
@@ -29,11 +44,11 @@ export class Rocket {
     }
 
     turnLeft(spaceObjects) {
-        this.turnOrientation += 0.001;
+        this.turnOrientation += this.turnOrientationVelocity;
     }
 
     turnRight(spaceObjects) {
-        this.turnOrientation -= 0.001;
+        this.turnOrientation -= this.turnOrientationVelocity;
     }
 
     accelerateDown(spaceObjects) {
