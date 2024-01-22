@@ -1,8 +1,8 @@
 import { Rocket } from '../rocket/Rocket.js';
 import { accelerateUp, turnLeft, turnRight, accelerateDown } from '../js/movementButtons.js';
-import { SpaceObject } from '../space/SpaceObjects.js';
+import { SpaceObject, Satellite } from '../space/SpaceObjects.js';
 
-const canvas = document.getElementById('canvas1'); // references html canvas tag
+export const canvas = document.getElementById('canvas1'); // references html canvas tag
 /** @type {CanvasRenderingContext2D} */
 export const ctx = canvas.getContext('2d'); // something about apis
 
@@ -40,11 +40,10 @@ canvas.addEventListener('mousemove', function(event) {
 
 var main_rocket = new Rocket(0, 0);
 
-var spaceObjects = [];
-
-var moon1 = new SpaceObject(0, 0, 100);
-
-spaceObjects.push(moon1);
+var spaceObjects = [
+    new Satellite(-300, -300, 100, "white", "grey"),
+    new Satellite(7400, 7400, 5000, "yellow", "orange", false),
+];
 
 const accelerateButtons = {
     up: document.getElementById('accelerate_up'),

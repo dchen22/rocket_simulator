@@ -1,5 +1,6 @@
 import { ORI, ORI_X, ORI_Y } from '../display/DisplayMethods.js';
-import { ctx } from '../js/script.js';
+import { ctx, canvas } from '../js/script.js';
+import { velocityMagnitude } from '../maths/MathFunctions.js';
 
 export class Rocket {
     constructor(x, y) {
@@ -8,6 +9,10 @@ export class Rocket {
         this.turnOrientation = 0;
         this.turnOrientationVelocity = 0.0002;
         this.turnOrientationAccelerationCoefficient = 0.99;
+
+        this.backgroundImagePath = "../images/starry_background.png"
+        this.backgroundImage = new Image();
+        this.backgroundImage.src = this.backgroundImagePath;
     }
 
     display() {
@@ -18,6 +23,10 @@ export class Rocket {
         // Set the center of the canvas as (0, 0)
         const centerX = ORI_X(0);
         const centerY = ORI_Y(0);
+
+        // this.displayBackground();
+
+        this.drawThrusterTrail();
 
         // Draw the rocket body
         ctx.fillStyle = 'gray';
@@ -37,10 +46,51 @@ export class Rocket {
         ctx.lineTo(centerX, centerY - 40);
         ctx.closePath();
         ctx.fill();
+
+        
+    }
+
+    
+    drawThrusterTrail() {
+
+        // Set the center of the canvas as (0, 0)
+        const centerX = ORI_X(0);
+        const centerY = ORI_Y(0);
+
+        // Set the triangle colors
+        const orangeColor = 'orange';
+        const yellowColor = 'yellow';
+
+        const speedMagnitude = velocityMagnitude(this.velocity) / 1.25; // Adjust based on velocity
+        console.log("thruster height: " + speedMagnitude);
+
+
+        for (let i = 0; i < 10; i++) {
+            ctx.fillStyle = orangeColor;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY + 20*(i+1)*speedMagnitude/6, Math.max(0, speedMagnitude * 2 - 2*i), 0, 2 * Math.PI);
+            ctx.fill();
+
+            ctx.fillStyle = yellowColor;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY + 20*(i+1)*speedMagnitude/6, Math.max(0, speedMagnitude - 2*i), 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+
+    }
+
+    displayBackground() {
+        for (let i = 0; i < canvas.width; i += this.backgroundImage.clientWidth) {
+            for (let j = 0; j < canvas.height; j += this.backgroundImage.clientHeight) {
+                // ctx.drawImage(this.backgroundImage, i, j, this.backgroundImage.clientWidth, this.backgroundImage.clientHeight);
+            }
+        }
     }
 
     accelerateUp(spaceObjects) {
         this.velocity.y -= 0.2;
+        console.log("velocity: " + this.velocity.y);
     }
 
     turnLeft(spaceObjects) {
@@ -72,7 +122,6 @@ export class Rocket {
 
     rotateOtherObjects(spaceObjects) {
         this.turnOrientation *= this.turnOrientationAccelerationCoefficient;
-        console.log("turn orientation: " + this.turnOrientation)
         for (let i = 0; i < spaceObjects.length; i++) {
             // rotate positions around origin
             let x = spaceObjects[i].x;
