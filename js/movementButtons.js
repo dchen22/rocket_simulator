@@ -4,12 +4,12 @@ export function accelerateUp(rocket, spaceObjects) {
     rocket.accelerateUp(spaceObjects);
 }
 
-export function accelerateLeft(rocket, spaceObjects) {
-    rocket.accelerateLeft(spaceObjects);
+export function turnLeft(rocket, spaceObjects) {
+    rocket.turnLeft(spaceObjects);
 }
 
-export function accelerateRight(rocket, spaceObjects) {
-    rocket.accelerateRight(spaceObjects);
+export function turnRight(rocket, spaceObjects) {
+    rocket.turnRight(spaceObjects);
 }
 
 export function accelerateDown(rocket, spaceObjects) {

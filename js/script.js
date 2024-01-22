@@ -1,5 +1,5 @@
 import { Rocket } from '../rocket/Rocket.js';
-import { accelerateUp, accelerateLeft, accelerateRight, accelerateDown } from '../js/movementButtons.js';
+import { accelerateUp, turnLeft, turnRight, accelerateDown } from '../js/movementButtons.js';
 import { SpaceObject } from '../space/SpaceObjects.js';
 
 const canvas = document.getElementById('canvas1'); // references html canvas tag
@@ -33,6 +33,11 @@ canvas.addEventListener('mousemove', function(event) {
 
 
 
+
+
+
+
+
 var main_rocket = new Rocket(0, 0);
 
 var spaceObjects = [];
@@ -43,8 +48,8 @@ spaceObjects.push(moon1);
 
 const accelerateButtons = {
     up: document.getElementById('accelerate_up'),
-    left: document.getElementById('accelerate_left'),
-    right: document.getElementById('accelerate_right'),
+    left: document.getElementById('turn_left'),
+    right: document.getElementById('turn_right'),
     down: document.getElementById('accelerate_down'),
 };
 
@@ -60,7 +65,6 @@ Object.values(accelerateButtons).forEach(button => {
 });
 
 
-
 // continuous animation
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -70,11 +74,11 @@ function animate() {
     }
 
     if (accelerateButtons.left.isPressed) {
-        accelerateLeft(main_rocket, spaceObjects);
+        turnLeft(main_rocket, spaceObjects);
     }
 
     if (accelerateButtons.right.isPressed) {
-        accelerateRight(main_rocket, spaceObjects);
+        turnRight(main_rocket, spaceObjects);
     }
 
     if (accelerateButtons.down.isPressed) {
@@ -87,7 +91,7 @@ function animate() {
         spaceObjects[i].display();
     }
    
-    main_rocket.display();
+    main_rocket.display();    
 
     requestAnimationFrame(animate);
 }
