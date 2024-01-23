@@ -6,10 +6,11 @@ export class Background {
     constructor() {
         this.stars = [];
         this.maxStars = 10; // Maximum number of stars on the screen
-        this.starLifespan = 200; // Base lifespan of each star in frames
+        this.starLifespan = 500; // Base lifespan of each star in frames
         this.starSpawnDelay = 5; // Delay between spawning new stars in frames
         this.framesSinceLastSpawn = 0;
         this.starSpeedMultiplier = 0.02; // Adjustable speed multiplier
+        this.starGenerationSpreadParameter = 2; // Higher value means stars will be more spread out
 
         this.generateInitialStars();
     }
@@ -22,8 +23,8 @@ export class Background {
 
     spawnStar() {
         this.stars.push({
-            x: Math.random() * 2000,
-            y: Math.random() * 2000,
+            x: this.starGenerationSpreadParameter*(Math.random() * Math.max(canvas.clientWidth, canvas.clientHeight) - canvas.clientWidth / 2),
+            y: this.starGenerationSpreadParameter*(Math.random() * Math.max(canvas.clientWidth, canvas.clientHeight) - canvas.clientWidth / 2),
             lifespan: Math.floor(Math.random() * this.starLifespan) + 1, // Random lifespan
             spawnDelay: Math.floor(Math.random() * this.starSpawnDelay), // Random spawn delay
         });
