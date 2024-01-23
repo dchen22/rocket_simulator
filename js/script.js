@@ -41,8 +41,8 @@ canvas.addEventListener('mousemove', function(event) {
 var main_rocket = new Rocket(0, 0);
 
 var spaceObjects = [
-    new Satellite(-300, -300, 100, "white", "grey"),
-    new Satellite(7400, 7400, 5000, "yellow", "orange", false),
+    new Satellite(-300, -300, 100, "white", "grey", true),
+    new Satellite(3750, 3750, 5000, "yellow", "orange", false),
 ];
 
 const accelerateButtons = {

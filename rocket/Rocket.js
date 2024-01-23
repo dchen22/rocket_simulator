@@ -1,6 +1,7 @@
 import { ORI, ORI_X, ORI_Y } from '../display/DisplayMethods.js';
 import { ctx, canvas } from '../js/script.js';
-import { velocityMagnitude } from '../maths/MathFunctions.js';
+import { magnitude, checkCollide } from '../maths/MathFunctions.js';
+import { drawCircle } from '../display/DisplayMethods.js';
 
 export class Rocket {
     constructor(x, y) {
@@ -9,6 +10,10 @@ export class Rocket {
         this.turnOrientation = 0;
         this.turnOrientationVelocity = 0.0002;
         this.turnOrientationAccelerationCoefficient = 0.99;
+
+        // we check if any of the hitboxpoints land inside of another object to determine whether they collide
+        // this.hitboxPoints = [[ORI_X(0) - 10, ORI_Y(0) + 20], [ORI_X(0) + 10, ORI_Y(0) + 20], [ORI_X(0) + 10, ORI_Y(0) - 20], [ORI_X(0) - 10, ORI_Y(0) - 20], [ORI_X(0), ORI_Y(0) - 40]]
+        this.hitboxPoints = [[ORI_X(0), ORI_Y(0)]]
 
         this.backgroundImagePath = "../images/starry_background.png"
         this.backgroundImage = new Image();
@@ -47,7 +52,6 @@ export class Rocket {
         ctx.closePath();
         ctx.fill();
 
-        
     }
 
     
@@ -61,20 +65,11 @@ export class Rocket {
         const orangeColor = 'orange';
         const yellowColor = 'yellow';
 
-        const speedMagnitude = velocityMagnitude(this.velocity) / 1.25; // Adjust based on velocity
-        console.log("thruster height: " + speedMagnitude);
-
+        const speedMagnitude = magnitude(this.velocity) / 1.25; // Adjust based on velocity
 
         for (let i = 0; i < 10; i++) {
-            ctx.fillStyle = orangeColor;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY + 20*(i+1)*speedMagnitude/6, Math.max(0, speedMagnitude * 2 - 2*i), 0, 2 * Math.PI);
-            ctx.fill();
-
-            ctx.fillStyle = yellowColor;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY + 20*(i+1)*speedMagnitude/6, Math.max(0, speedMagnitude - 2*i), 0, 2 * Math.PI);
-            ctx.fill();
+            drawCircle(centerX, centerY + 20*(i+1)*speedMagnitude/6, Math.max(0, speedMagnitude * 2 - 2*i), orangeColor, orangeColor);
+            drawCircle(centerX, centerY + 20*(i+1)*speedMagnitude/6, Math.max(0, speedMagnitude - 2*i), yellowColor, yellowColor);
         }
 
 
@@ -85,6 +80,14 @@ export class Rocket {
             for (let j = 0; j < canvas.height; j += this.backgroundImage.clientHeight) {
                 // ctx.drawImage(this.backgroundImage, i, j, this.backgroundImage.clientWidth, this.backgroundImage.clientHeight);
             }
+        }
+    }
+
+    _drawHitboxPoints() {
+        // if u need to see the hitbox points
+        for (let i = 0; i < this.hitboxPoints.length; i++) {
+            drawCircle(this.hitboxPoints[i][0], this.hitboxPoints[i][1], 5, 'red', 'red');
+            console.log("hitbox points: " + this.hitboxPoints[i][0] + ", " + this.hitboxPoints[i][1])
         }
     }
 
@@ -108,6 +111,9 @@ export class Rocket {
     move(spaceObjects) {
         this.shiftOtherObjects(spaceObjects);
         this.rotateOtherObjects(spaceObjects);
+        for (let i = 0; i < spaceObjects.length; i++) {
+            checkCollide(this, spaceObjects[i]);
+        }
     }
 
     shiftOtherObjects(spaceObjects) {

@@ -24,7 +24,7 @@ export class Satellite extends SpaceObject {
         ctx.strokeStyle = this.edgeColour;
         ctx.lineWidth = 5;
         ctx.beginPath(); 
-        ctx.arc(ORI_X(this.x), ORI_Y(this.y), this.radius*2, 0, 2 * Math.PI);
+        ctx.arc(ORI_X(this.x), ORI_Y(this.y), this.radius, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke();
     }
