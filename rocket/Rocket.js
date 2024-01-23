@@ -2,6 +2,7 @@ import { ORI, ORI_X, ORI_Y } from '../display/DisplayMethods.js';
 import { ctx, canvas } from '../js/script.js';
 import { magnitude, checkCollide } from '../maths/MathFunctions.js';
 import { drawCircle } from '../display/DisplayMethods.js';
+import { Background } from './Background.js';
 
 export class Rocket {
     constructor(x, y) {
@@ -14,13 +15,11 @@ export class Rocket {
         // we check if any of the hitboxpoints land inside of another object to determine whether they collide
         // this.hitboxPoints = [[ORI_X(0) - 10, ORI_Y(0) + 20], [ORI_X(0) + 10, ORI_Y(0) + 20], [ORI_X(0) + 10, ORI_Y(0) - 20], [ORI_X(0) - 10, ORI_Y(0) - 20], [ORI_X(0), ORI_Y(0) - 40]]
         this.hitboxPoints = [[ORI_X(0), ORI_Y(0)]]
-
-        this.backgroundImagePath = "../images/starry_background.png"
-        this.backgroundImage = new Image();
-        this.backgroundImage.src = this.backgroundImagePath;
+        this.background = new Background();
     }
 
     display() {
+        this.displayBackground();
         // const rocketImage = document.getElementById('rocket_image');
         // rocketImage.src = '../rocket/rocket.png';
         // ctx.drawImage(rocketImage, ORI_X(0) - rocketImage.clientWidth/2, ORI_Y(0) - rocketImage.clientHeight/2);
@@ -76,11 +75,11 @@ export class Rocket {
     }
 
     displayBackground() {
-        for (let i = 0; i < canvas.width; i += this.backgroundImage.clientWidth) {
-            for (let j = 0; j < canvas.height; j += this.backgroundImage.clientHeight) {
-                // ctx.drawImage(this.backgroundImage, i, j, this.backgroundImage.clientWidth, this.backgroundImage.clientHeight);
-            }
-        }
+        // Update the stars based on rocket velocity
+        this.background.updateStars({ x: this.velocity.x, y: this.velocity.y });
+
+        // Draw the stars
+        this.background.drawStars(ctx);
     }
 
     _drawHitboxPoints() {
@@ -142,6 +141,15 @@ export class Rocket {
 
             this.velocity.x = vx * Math.cos(this.turnOrientation) - vy * Math.sin(this.turnOrientation);
             this.velocity.y = vx * Math.sin(this.turnOrientation) + vy * Math.cos(this.turnOrientation);
+        }
+
+        for (let i = 0; i < this.background.stars.length; i++) {
+            // rotate positions around origin
+            let x = this.background.stars[i].x;
+            let y = this.background.stars[i].y;
+
+            this.background.stars[i].x = x * Math.cos(this.turnOrientation) - y * Math.sin(this.turnOrientation);
+            this.background.stars[i].y = x * Math.sin(this.turnOrientation) + y * Math.cos(this.turnOrientation);
         }
     }
 }

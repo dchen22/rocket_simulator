@@ -14,8 +14,8 @@ export class SpaceObject {
 }
 
 export class Satellite extends SpaceObject {
-    constructor(x, y, radius, innerColour, edgeColour) {
-        super(x, y, radius, innerColour, edgeColour);
+    constructor(x, y, radius, innerColour, edgeColour, solid=true) {
+        super(x, y, radius, innerColour, edgeColour, solid);
     }
 
     display() {

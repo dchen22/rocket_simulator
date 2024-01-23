@@ -44,6 +44,7 @@ var spaceObjects = [
     new Satellite(-300, -300, 100, "white", "grey", true),
     new Satellite(3750, 3750, 5000, "yellow", "orange", false),
 ];
+console.log(spaceObjects[1].solid)
 
 const accelerateButtons = {
     up: document.getElementById('accelerate_up'),
