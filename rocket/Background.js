@@ -5,9 +5,10 @@ import { ORI_X, ORI_Y, drawCircle } from '../display/DisplayMethods.js';
 export class Background {
     constructor() {
         this.stars = [];
-        this.maxStars = 10; // Maximum number of stars on the screen
-        this.starLifespan = 500; // Base lifespan of each star in frames
-        this.starSpawnDelay = 5; // Delay between spawning new stars in frames
+        this.minStars = 5; // Minimum number of stars on the screen
+        this.maxStars = 20; // Maximum number of stars on the screen
+        this.starLifespan = 200; // Base lifespan of each star in frames
+        this.starSpawnDelay = this.starLifespan / this.maxStars; // Delay between spawning new stars in frames
         this.framesSinceLastSpawn = 0;
         this.starSpeedMultiplier = 0.02; // Adjustable speed multiplier
         this.starGenerationSpreadParameter = 2; // Higher value means stars will be more spread out
@@ -46,6 +47,14 @@ export class Background {
             if (--star.lifespan <= 0) {
                 // Star has reached the end of its lifespan, remove it
                 this.stars.splice(i, 1);
+
+                if (this.stars.length < this.maxStars) {
+                    // Spawn a new star to replace the expired one
+                    this.spawnStar();
+                }
+            }
+
+            if (this.stars.length < this.minStars) {
                 // Spawn a new star to replace the expired one
                 this.spawnStar();
             }
