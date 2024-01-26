@@ -1,16 +1,16 @@
 import { Rocket } from '../rocket/Rocket.js';
 import { accelerateUp, turnLeft, turnRight, accelerateDown } from '../js/movementButtons.js';
 import { SpaceObject, Satellite } from '../space/SpaceObjects.js';
-import { ORI_X, ORI_Y } from '../display/DisplayMethods.js';
+import { ORI_X, ORI_Y, minimapORI_X, minimapORI_Y } from '../display/DisplayMethods.js';
 
 export const canvas = document.getElementById('canvas1'); // references html canvas tag
-export const minimapCanvas = document.getElementById('minimap'); // Add this line
 /** @type {CanvasRenderingContext2D} */
 export const ctx = canvas.getContext('2d'); // something about apis
-/** @type {CanvasRenderingContext2D} */
-export const minimapCtx = minimapCanvas.getContext('2d'); // Add this line
 
-const scaleFactor = 10000; // Add this line
+export const minimapScaleFactor = 200; // minimap scaling factor
+export const minimapWidth = 200; // minimap width
+export const minimapHeight = 200; // minimap height
+export const minimapEdgeWidth = 2; // minimap edge width
 
 
 // make sure canvas fills up the entire page
@@ -21,8 +21,6 @@ canvas.height = window.innerHeight;
 window.addEventListener('resize', function() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    minimapCanvas.width = 200; // Update the minimap canvas size as needed
-    minimapCanvas.height = 200;
     updateMinimap(); // Call this function to update the minimap content
 });
 
@@ -59,15 +57,64 @@ var spaceObjects = [
 
 // Add a function to update the minimap content
 function updateMinimap() {
-    // TODO
+    drawMinimap(main_rocket, spaceObjects);
 }
 
-function drawMinimap() {
-    // TODO
+function drawMinimap(rocket, spaceObjects) {
+    ctx.lineWidth = minimapEdgeWidth;
+    ctx.strokeStyle = 'white';
+    ctx.fillStyle = 'black';
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(minimapWidth + minimapEdgeWidth / 2, 0);
+    ctx.lineTo(minimapWidth + minimapEdgeWidth / 2, minimapHeight + minimapEdgeWidth / 2);
+    ctx.lineTo(0, minimapHeight + minimapEdgeWidth / 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    for (let i = 0; i < spaceObjects.length; i++) {
+        drawMinimapObject(spaceObjects[i]);
+    }
+
+    drawMinimapRocket(rocket);
 }
 
 function drawMinimapObject(object) {
-    // TODO
+
+    ctx.save();
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(minimapWidth + minimapEdgeWidth / 2, 0);
+    ctx.lineTo(minimapWidth + minimapEdgeWidth / 2, minimapHeight + minimapEdgeWidth / 2);
+    ctx.lineTo(0, minimapHeight + minimapEdgeWidth / 2);
+    ctx.closePath();
+    ctx.clip(); // Clip the minimap to the minimap border
+
+    ctx.fillStyle = object.innerColour;
+    ctx.strokeStyle = object.edgeColour;
+    ctx.lineWidth = object.radius / minimapScaleFactor / 10; // edge of objects on minimap should be 1/10 of the radius of the object
+
+    ctx.beginPath(); 
+    ctx.arc(minimapORI_X(object.x), minimapORI_Y(object.y), object.radius / minimapScaleFactor, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();  
+}
+
+function drawMinimapRocket(rocket) {
+    ctx.fillStyle = 'gray';
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(minimapORI_X(0) - 4, minimapORI_Y(0) + 8);
+    ctx.lineTo(minimapORI_X(0) + 4, minimapORI_Y(0) + 8);
+    ctx.lineTo(minimapORI_X(0), minimapORI_Y(0) - 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
 }
 
 function getNearbyObjects(centerObject, objects, radius) {
@@ -122,9 +169,11 @@ function animate() {
         spaceObjects[i].display();
     }
 
+
     main_rocket.display();
 
     updateMinimap(); // Update the minimap content
+    
 
     requestAnimationFrame(animate);
 }

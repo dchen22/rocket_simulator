@@ -9,6 +9,8 @@ export class SpaceObject {
         this.innerColour = innerColour;
         this.edgeColour = edgeColour;
         this.solid = solid;
+
+        this.edgeWidth = 5;
     }
 
 }
@@ -22,7 +24,7 @@ export class Satellite extends SpaceObject {
         // console.log("x: " + ORI_X(this.x), "y: " + ORI_Y(this.y));
         ctx.fillStyle = this.innerColour;
         ctx.strokeStyle = this.edgeColour;
-        ctx.lineWidth = 5;
+        ctx.lineWidth = this.edgeWidth;
         ctx.beginPath(); 
         ctx.arc(ORI_X(this.x), ORI_Y(this.y), this.radius, 0, 2 * Math.PI);
         ctx.fill();

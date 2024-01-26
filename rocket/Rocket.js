@@ -32,6 +32,8 @@ export class Rocket {
 
         this.drawThrusterTrail();
 
+        ctx.strokeStyle = 'black';
+
         // Draw the rocket body
         ctx.fillStyle = 'gray';
         ctx.beginPath();
@@ -46,11 +48,20 @@ export class Rocket {
         ctx.fillStyle = 'red';
         ctx.beginPath();
         ctx.moveTo(centerX - 10, centerY - 20);
-        ctx.lineTo(centerX + 10, centerY - 20);
         ctx.lineTo(centerX, centerY - 40);
+        ctx.lineTo(centerX + 10, centerY - 20);
         ctx.closePath();
         ctx.fill();
 
+        // ctx.fillStyle = 'white';
+        // ctx.beginPath();
+        // ctx.moveTo(centerX - 100, centerY - 100);
+        // ctx.lineTo(centerX + 100, centerY - 100);
+        // ctx.lineTo(centerX + 100, centerY + 100);
+        // ctx.lineTo(centerX - 100, centerY + 100);
+        // ctx.closePath();
+        // ctx.fillStyle = 'white';
+        // ctx.fill();
     }
 
     

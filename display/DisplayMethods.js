@@ -1,4 +1,4 @@
-import { ctx } from '../js/script.js';
+import { ctx, minimapScaleFactor, minimapWidth, minimapHeight, minimapEdgeWidth } from '../js/script.js';
 
 export function ORI(x, y) {
     return {x: ORI_X(x), y: ORI_Y(y)};
@@ -10,6 +10,14 @@ export function ORI_X(x) {
 
 export function ORI_Y(y) {
     return y + window.innerHeight / 2;
+}
+
+export function minimapORI_X(x) {
+    return x / minimapScaleFactor + minimapWidth / 2 + minimapEdgeWidth / 2;
+}
+
+export function minimapORI_Y(y) {
+    return y / minimapScaleFactor + minimapHeight / 2 + minimapEdgeWidth / 2;
 }
 
 export function drawCircle(x, y, radius, innerColour, edgeColour) {
