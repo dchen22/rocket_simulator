@@ -6,8 +6,11 @@ import { Background } from './Background.js';
 
 export class Rocket {
     constructor(x, y) {
+        this.ACCELERATION = 0.01; // ROCKET POWER
+        this.currentAcceleration = 0; // current thruster power
+        this.MAX_ACCELERATION = 0.2; // cap on thruster power
         this.velocity = {x: 0, y: 0};
-        this.accelerationCoefficient = {x: 0.99, y: 0.99};
+        this.spaceDragCoefficient = 0.999; // determines drag in space
         this.turnOrientation = 0;
         this.turnOrientationVelocity = 0.0002;
         this.turnOrientationAccelerationCoefficient = 0.99;
@@ -52,16 +55,6 @@ export class Rocket {
         ctx.lineTo(centerX + 10, centerY - 20);
         ctx.closePath();
         ctx.fill();
-
-        // ctx.fillStyle = 'white';
-        // ctx.beginPath();
-        // ctx.moveTo(centerX - 100, centerY - 100);
-        // ctx.lineTo(centerX + 100, centerY - 100);
-        // ctx.lineTo(centerX + 100, centerY + 100);
-        // ctx.lineTo(centerX - 100, centerY + 100);
-        // ctx.closePath();
-        // ctx.fillStyle = 'white';
-        // ctx.fill();
     }
 
     
@@ -75,7 +68,7 @@ export class Rocket {
         const orangeColor = 'orange';
         const yellowColor = 'yellow';
 
-        const speedMagnitude = magnitude(this.velocity) / 1.25; // Adjust based on velocity
+        const speedMagnitude = Math.abs(this.currentAcceleration) * 40; // Adjust based on velocity
 
         for (let i = 0; i < 10; i++) {
             drawCircle(centerX, centerY + 20*(i+1)*speedMagnitude/6, Math.max(0, speedMagnitude * 2 - 2*i), orangeColor, orangeColor);
@@ -102,8 +95,11 @@ export class Rocket {
     }
 
     accelerateUp(spaceObjects) {
-        this.velocity.y -= 0.2;
-        console.log("velocity: " + this.velocity.y);
+        this.currentAcceleration += this.ACCELERATION;
+        if (this.currentAcceleration > this.MAX_ACCELERATION) {
+            this.currentAcceleration = this.MAX_ACCELERATION;
+        }
+        this.velocity.y -= this.currentAcceleration;
     }
 
     turnLeft(spaceObjects) {
@@ -114,16 +110,20 @@ export class Rocket {
         this.turnOrientation -= this.turnOrientationVelocity;
     }
 
+    // remove this and its button later
     accelerateDown(spaceObjects) {
-        this.velocity.y += 0.2;
+        // this.velocity.y += this.ACCELERATION;
+        console.log("can't go backwards in a rocket :(");
     }
 
     move(spaceObjects) {
+        console.log("VELOCITY: " + this.velocity.y);
         this.shiftOtherObjects(spaceObjects);
         this.rotateOtherObjects(spaceObjects);
         for (let i = 0; i < spaceObjects.length; i++) {
             checkCollide(this, spaceObjects[i]);
         }
+        this.currentAcceleration *= 0.99;
     }
 
     shiftOtherObjects(spaceObjects) {
@@ -131,8 +131,8 @@ export class Rocket {
             spaceObjects[i].x -= this.velocity.x; // movement should be in opposite direction of what rocket should have moved
             spaceObjects[i].y -= this.velocity.y; // movement should be in opposite direction of what rocket should have moved
 
-            this.velocity.x *= this.accelerationCoefficient.x;
-            this.velocity.y *= this.accelerationCoefficient.y;
+            this.velocity.x *= this.spaceDragCoefficient;
+            this.velocity.y *= this.spaceDragCoefficient;
         }
     }
 

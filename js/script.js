@@ -82,7 +82,7 @@ function drawMinimap(rocket, spaceObjects) {
 
 function drawMinimapObject(object) {
 
-    ctx.save();
+    ctx.save(); // Save the current state of the canvas (without clipping)
 
     ctx.beginPath();
     ctx.moveTo(0, 0);
@@ -90,7 +90,7 @@ function drawMinimapObject(object) {
     ctx.lineTo(minimapWidth + minimapEdgeWidth / 2, minimapHeight + minimapEdgeWidth / 2);
     ctx.lineTo(0, minimapHeight + minimapEdgeWidth / 2);
     ctx.closePath();
-    ctx.clip(); // Clip the minimap to the minimap border
+    ctx.clip(); // Clip the canvas to the minimap so that we don't draw map objects outside of the minimap
 
     ctx.fillStyle = object.innerColour;
     ctx.strokeStyle = object.edgeColour;
@@ -101,7 +101,7 @@ function drawMinimapObject(object) {
     ctx.fill();
     ctx.stroke();
 
-    ctx.restore();  
+    ctx.restore(); // Restore the previous state of the canvas (without clipping)
 }
 
 function drawMinimapRocket(rocket) {
