@@ -6,14 +6,18 @@ import { Background } from './Background.js';
 
 export class Rocket {
     constructor(x, y) {
+        // PERFORMANCE
         this.ACCELERATION = 0.01; // ROCKET POWER
         this.currentAcceleration = 0; // current thruster power
         this.MAX_ACCELERATION = 0.2; // cap on thruster power
         this.velocity = {x: 0, y: 0};
-        this.spaceDragCoefficient = 0.999; // determines drag in space
+        this.spaceDragCoefficient = 0.999; // determines drag in space (aerodynamics of rocket)
         this.turnOrientation = 0;
         this.turnOrientationVelocity = 0.0002;
-        this.turnOrientationAccelerationCoefficient = 0.99;
+        this.turnOrientationAccelerationCoefficient = 0.999; // determines rotational drag in space
+
+        // VISUALS
+        this.thrusterLengthCoefficient = 40; // determines length of thruster trail
 
         // we check if any of the hitboxpoints land inside of another object to determine whether they collide
         // this.hitboxPoints = [[ORI_X(0) - 10, ORI_Y(0) + 20], [ORI_X(0) + 10, ORI_Y(0) + 20], [ORI_X(0) + 10, ORI_Y(0) - 20], [ORI_X(0) - 10, ORI_Y(0) - 20], [ORI_X(0), ORI_Y(0) - 40]]
@@ -68,7 +72,7 @@ export class Rocket {
         const orangeColor = 'orange';
         const yellowColor = 'yellow';
 
-        const speedMagnitude = Math.abs(this.currentAcceleration) * 40; // Adjust based on velocity
+        const speedMagnitude = Math.abs(this.currentAcceleration) * this.thrusterLengthCoefficient; // Adjust based on velocity
 
         for (let i = 0; i < 10; i++) {
             drawCircle(centerX, centerY + 20*(i+1)*speedMagnitude/6, Math.max(0, speedMagnitude * 2 - 2*i), orangeColor, orangeColor);
@@ -117,7 +121,7 @@ export class Rocket {
     }
 
     move(spaceObjects) {
-        console.log("VELOCITY: " + this.velocity.y);
+        console.log("VELOCITY: " + magnitude(this.velocity));
         this.shiftOtherObjects(spaceObjects);
         this.rotateOtherObjects(spaceObjects);
         for (let i = 0; i < spaceObjects.length; i++) {
