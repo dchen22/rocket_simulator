@@ -11,9 +11,10 @@ export class Rocket {
         this.currentAcceleration = 0; // current thruster power
         this.MAX_ACCELERATION = 0.2; // cap on thruster power
         this.velocity = {x: 0, y: 0};
+        this.mass = 1000; // mass of rocket
         this.spaceDragCoefficient = 0.999; // determines drag in space (aerodynamics of rocket)
         this.turnOrientation = 0;
-        this.turnOrientationVelocity = 0.0002;
+        this.turnOrientationVelocity = 0.0001;
         this.turnOrientationAccelerationCoefficient = 0.999; // determines rotational drag in space
 
         // VISUALS
@@ -21,7 +22,7 @@ export class Rocket {
 
         // we check if any of the hitboxpoints land inside of another object to determine whether they collide
         // this.hitboxPoints = [[ORI_X(0) - 10, ORI_Y(0) + 20], [ORI_X(0) + 10, ORI_Y(0) + 20], [ORI_X(0) + 10, ORI_Y(0) - 20], [ORI_X(0) - 10, ORI_Y(0) - 20], [ORI_X(0), ORI_Y(0) - 40]]
-        this.hitboxPoints = [[ORI_X(0), ORI_Y(0)]]
+        this.hitboxPoints = [[0, 0]]
         this.background = new Background();
     }
 

@@ -2,13 +2,16 @@ import { ORI, ORI_X, ORI_Y } from '../display/DisplayMethods.js';
 import { ctx } from '../js/script.js';
 
 export class SpaceObject {
-    constructor(x, y, radius, innerColour, edgeColour, solid=true) {
+    constructor(name, x, y, radius, mass, innerColour, edgeColour, isSolid) {
+        this.name = name;
         this.x = x;
         this.y = y;
         this.radius = radius;
+        this.mass = mass;
         this.innerColour = innerColour;
         this.edgeColour = edgeColour;
-        this.solid = solid;
+        this.isSolid = isSolid;
+        this.velocity = {x: 0, y: 0};
 
         this.edgeWidth = 5;
     }
@@ -16,8 +19,8 @@ export class SpaceObject {
 }
 
 export class Satellite extends SpaceObject {
-    constructor(x, y, radius, innerColour, edgeColour, solid=true) {
-        super(x, y, radius, innerColour, edgeColour, solid);
+    constructor(name, x, y, radius, mass, innerColour, edgeColour, isSolid) {
+        super(name, x, y, radius, mass, innerColour, edgeColour, isSolid);
     }
 
     display() {

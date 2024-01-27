@@ -1,4 +1,5 @@
 import {ORI_X, ORI_Y} from "../display/DisplayMethods.js";
+import { spaceObjects } from "../js/script.js";
 
 export function magnitude(vector) {
     return Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2));
@@ -24,7 +25,8 @@ export function normalizeVector(vector) {
 // apply velocity change after rocket collides with object
 export function _applyCollision(rocket, object) {
     // Calculate the normal vector from the rocket to the object
-    let normal_normalized = normalizeVector({ x: ORI_X(0)- ORI_X(object.x), y: ORI_Y(0) - ORI_Y(object.y)});
+    // technically it's object.x - rocket.x and object.y - rocket.y but we're assuming the rocket is at the origin
+    let normal_normalized = normalizeVector({ x: object.x, y: object.y});
 
     // Calculate the dot product of the rocket's velocity and the normal vector
     let dp = dotProduct(rocket.velocity, normal_normalized);
@@ -40,11 +42,28 @@ function reverseVelocity(rocket) {
 // check if rocket is colliding with any objects
 export function checkCollide(rocket, object) {
     for (let i = 0; i < rocket.hitboxPoints.length; i++) {
-        if (object.solid && Math.sqrt(Math.pow(rocket.hitboxPoints[i][0] - ORI_X(object.x), 2) + Math.pow(rocket.hitboxPoints[i][1] - ORI_Y(object.y), 2)) < object.radius) {
-            console.log("colliding");
-            // _applyCollision(rocket, object);
-            _applyCollision(rocket, object);
+        console.log(object.isSolid);
+        console.log("distance: " + Math.sqrt(Math.pow(rocket.hitboxPoints[i][0] - object.x, 2) + Math.pow(rocket.hitboxPoints[i][1] - object.y, 2)));
+        if (object.isSolid && Math.sqrt(Math.pow(rocket.hitboxPoints[i][0] - object.x, 2) + Math.pow(rocket.hitboxPoints[i][1] - object.y, 2)) < object.radius) {
+            console.log("colliding with " + object.name + " at " + object.x + ", " + object.y);
+            
+            // if the rocket is inside the SOLID object then teleport it to the closest edge
+            // remember, we have to move all other objects, not the rocket itself
+            let vectorFromCenterTo_Rocket = {x : object.x, y: object.y};
+            let vectorFromCenterTo_Edge = {x : object.x, y: object.y};
+            vectorFromCenterTo_Edge.x *= object.radius / magnitude(vectorFromCenterTo_Rocket);  
+            vectorFromCenterTo_Edge.y *= object.radius / magnitude(vectorFromCenterTo_Rocket); 
+            let distanceFromRocketTo_Edge = {
+                x: vectorFromCenterTo_Edge.x - vectorFromCenterTo_Rocket.x, 
+                y: vectorFromCenterTo_Edge.y - vectorFromCenterTo_Rocket.y
+            };
+            console.log("distance from rocket to edge: " + distanceFromRocketTo_Edge.x, distanceFromRocketTo_Edge.y);
+            for (let j = 0; j < spaceObjects.length; j++) {
+                spaceObjects[j].x += distanceFromRocketTo_Edge.x;
+                spaceObjects[j].y += distanceFromRocketTo_Edge.y;
+            }
 
+            _applyCollision(rocket, object);
             return;
         }
     }

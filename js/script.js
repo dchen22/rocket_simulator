@@ -1,7 +1,8 @@
 import { Rocket } from '../rocket/Rocket.js';
 import { accelerateUp, turnLeft, turnRight, accelerateDown } from '../js/movementButtons.js';
 import { SpaceObject, Satellite } from '../space/SpaceObjects.js';
-import { ORI_X, ORI_Y, minimapORI_X, minimapORI_Y } from '../display/DisplayMethods.js';
+import { ORI_X, ORI_Y, minimapORI_X, minimapORI_Y, drawCircle } from '../display/DisplayMethods.js';
+import { gravitate_objectToObject, gravitate_rocketToObject as gravitate_rocketToObjects } from '../maths/gravity.js';
 
 export const canvas = document.getElementById('canvas1'); // references html canvas tag
 /** @type {CanvasRenderingContext2D} */
@@ -50,9 +51,9 @@ canvas.addEventListener('mousemove', function(event) {
 
 var main_rocket = new Rocket(0, 0);
 
-var spaceObjects = [
-    new Satellite(-300, -300, 100, "white", "grey", true),
-    new Satellite(3750, 3750, 5000, "yellow", "orange", false),
+export var spaceObjects = [
+    new Satellite("SMALL MOON", -300, -300, 100, 100000, "white", "grey", true),
+    // new Satellite("SMALL STAR", 3750, 3750, 5000, 125000000, "yellow", "orange", false),
 ];
 
 // Add a function to update the minimap content
@@ -163,6 +164,8 @@ function animate() {
         accelerateDown(main_rocket, spaceObjects);
     }
 
+    gravitate_rocketToObjects(main_rocket, spaceObjects);
+
     main_rocket.move(spaceObjects);
 
     for (let i = 0; i < spaceObjects.length; i++) {
@@ -174,7 +177,6 @@ function animate() {
 
     updateMinimap(); // Update the minimap content
     
-
     requestAnimationFrame(animate);
 }
 animate();
