@@ -33,6 +33,11 @@ export function _applyCollision(rocket, object) {
 
     // Calculate the reflection vector
     rocket.velocity = addVectors(rocket.velocity, scaleVector(normal_normalized, -2 * dp));
+
+    // TODO: once we "land" we should be able to start rotating again, with high dampening (i.e. you can rotate but the slowdown once you let go is high)
+    rocket.turnVelocity *= 0.2; // dampen rotation once we hit something
+    rocket.velocity.x *= 0.8; // dampen velocity once we hit something
+    rocket.velocity.y *= 0.8; // dampen velocity once we hit something
 }
 
 function reverseVelocity(rocket) {
@@ -43,9 +48,7 @@ function reverseVelocity(rocket) {
 export function checkCollide(rocket, object) {
     for (let i = 0; i < rocket.hitboxPoints.length; i++) {
         console.log(object.isSolid);
-        console.log("distance: " + Math.sqrt(Math.pow(rocket.hitboxPoints[i][0] - object.x, 2) + Math.pow(rocket.hitboxPoints[i][1] - object.y, 2)));
         if (object.isSolid && Math.sqrt(Math.pow(rocket.hitboxPoints[i][0] - object.x, 2) + Math.pow(rocket.hitboxPoints[i][1] - object.y, 2)) < object.radius) {
-            console.log("colliding with " + object.name + " at " + object.x + ", " + object.y);
             
             // if the rocket is inside the SOLID object then teleport it to the closest edge
             // remember, we have to move all other objects, not the rocket itself
@@ -57,7 +60,6 @@ export function checkCollide(rocket, object) {
                 x: vectorFromCenterTo_Edge.x - vectorFromCenterTo_Rocket.x, 
                 y: vectorFromCenterTo_Edge.y - vectorFromCenterTo_Rocket.y
             };
-            console.log("distance from rocket to edge: " + distanceFromRocketTo_Edge.x, distanceFromRocketTo_Edge.y);
             for (let j = 0; j < spaceObjects.length; j++) {
                 spaceObjects[j].x += distanceFromRocketTo_Edge.x;
                 spaceObjects[j].y += distanceFromRocketTo_Edge.y;

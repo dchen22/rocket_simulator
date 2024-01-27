@@ -7,15 +7,17 @@ import { Background } from './Background.js';
 export class Rocket {
     constructor(x, y) {
         // PERFORMANCE
-        this.ACCELERATION = 0.01; // ROCKET POWER
+        this.jerk = 0.01; // ROCKET POWER
         this.currentAcceleration = 0; // current thruster power
         this.MAX_ACCELERATION = 0.2; // cap on thruster power
         this.velocity = {x: 0, y: 0};
         this.mass = 1000; // mass of rocket
         this.spaceDragCoefficient = 0.999; // determines drag in space (aerodynamics of rocket)
-        this.turnOrientation = 0;
-        this.turnOrientationVelocity = 0.0001;
-        this.turnOrientationAccelerationCoefficient = 0.999; // determines rotational drag in space
+
+        this.turnVelocity = 0;
+        this.maxTurnVelocity = 0.01; // nice to have so it doesn't spin out of control
+        this.turnAcceleration = 0.0001;
+        this.turnOrientationDragCoefficient = 0.999; // determines rotational drag in space
 
         // VISUALS
         this.thrusterLengthCoefficient = 40; // determines length of thruster trail
@@ -100,7 +102,7 @@ export class Rocket {
     }
 
     accelerateUp(spaceObjects) {
-        this.currentAcceleration += this.ACCELERATION;
+        this.currentAcceleration += this.jerk;
         if (this.currentAcceleration > this.MAX_ACCELERATION) {
             this.currentAcceleration = this.MAX_ACCELERATION;
         }
@@ -108,11 +110,11 @@ export class Rocket {
     }
 
     turnLeft(spaceObjects) {
-        this.turnOrientation += this.turnOrientationVelocity;
+        this.turnVelocity += this.turnAcceleration;
     }
 
     turnRight(spaceObjects) {
-        this.turnOrientation -= this.turnOrientationVelocity;
+        this.turnVelocity -= this.turnAcceleration;
     }
 
     // remove this and its button later
@@ -142,21 +144,28 @@ export class Rocket {
     }
 
     rotateOtherObjects(spaceObjects) {
-        this.turnOrientation *= this.turnOrientationAccelerationCoefficient;
+        console.log("turn velocity: " + this.turnVelocity)
+
+        this.turnVelocity *= this.turnOrientationDragCoefficient;
+        if (this.turnVelocity > this.maxTurnVelocity) {
+            this.turnVelocity = this.maxTurnVelocity;
+        } else if (this.turnVelocity < -this.maxTurnVelocity) {
+            this.turnVelocity = -this.maxTurnVelocity;
+        }
         for (let i = 0; i < spaceObjects.length; i++) {
             // rotate positions around origin
             let x = spaceObjects[i].x;
             let y = spaceObjects[i].y;
 
-            spaceObjects[i].x = x * Math.cos(this.turnOrientation) - y * Math.sin(this.turnOrientation);
-            spaceObjects[i].y = x * Math.sin(this.turnOrientation) + y * Math.cos(this.turnOrientation);
+            spaceObjects[i].x = x * Math.cos(this.turnVelocity) - y * Math.sin(this.turnVelocity);
+            spaceObjects[i].y = x * Math.sin(this.turnVelocity) + y * Math.cos(this.turnVelocity);
 
             // rotate velocities around origin
             let vx = this.velocity.x;
             let vy = this.velocity.y;
 
-            this.velocity.x = vx * Math.cos(this.turnOrientation) - vy * Math.sin(this.turnOrientation);
-            this.velocity.y = vx * Math.sin(this.turnOrientation) + vy * Math.cos(this.turnOrientation);
+            this.velocity.x = vx * Math.cos(this.turnVelocity) - vy * Math.sin(this.turnVelocity);
+            this.velocity.y = vx * Math.sin(this.turnVelocity) + vy * Math.cos(this.turnVelocity);
         }
 
         for (let i = 0; i < this.background.stars.length; i++) {
@@ -164,8 +173,8 @@ export class Rocket {
             let x = this.background.stars[i].x;
             let y = this.background.stars[i].y;
 
-            this.background.stars[i].x = x * Math.cos(this.turnOrientation) - y * Math.sin(this.turnOrientation);
-            this.background.stars[i].y = x * Math.sin(this.turnOrientation) + y * Math.cos(this.turnOrientation);
+            this.background.stars[i].x = x * Math.cos(this.turnVelocity) - y * Math.sin(this.turnVelocity);
+            this.background.stars[i].y = x * Math.sin(this.turnVelocity) + y * Math.cos(this.turnVelocity);
         }
     }
 }
