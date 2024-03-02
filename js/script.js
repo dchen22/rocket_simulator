@@ -14,6 +14,7 @@ export const minimapHeight = 200; // minimap height
 export const minimapEdgeWidth = 2; // minimap edge width
 
 export const throttleSlider = document.getElementById('slider'); // control rocket throttle
+export var thrusterToggle = false; // toggle thruster on and off
 
 // make sure canvas fills up the entire page
 canvas.width = window.innerWidth; 
@@ -145,28 +146,31 @@ const accelerateButtons = {
     up: document.getElementById('accelerate_up'),
     left: document.getElementById('turn_left'),
     right: document.getElementById('turn_right'),
-    down: document.getElementById('accelerate_down'),
 };
 
 // Set up event listeners for mousedown and mouseup events
-Object.values(accelerateButtons).forEach(button => {
-    button.addEventListener('mousedown', function() {
-        button.isPressed = true;
-    });
+accelerateButtons.left.addEventListener('mousedown', function() {
+    accelerateButtons.left.isPressed = true;
+});
+accelerateButtons.left.addEventListener('mouseup', function() {
+    accelerateButtons.left.isPressed = false;
+});
+// Add event listeners for the right button
+accelerateButtons.right.addEventListener('mousedown', function() {
+    accelerateButtons.right.isPressed = true;
+});
+accelerateButtons.right.addEventListener('mouseup', function() {
+    accelerateButtons.right.isPressed = false;
+});
 
-    button.addEventListener('mouseup', function() {
-        button.isPressed = false;
-    });
+accelerateButtons.up.addEventListener('mouseup', function() {
+    thrusterToggle = !thrusterToggle;
 });
 
 
 // continuous animation
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (accelerateButtons.up.isPressed) {
-        accelerateUp(main_rocket, spaceObjects);
-    }
 
     if (accelerateButtons.left.isPressed) {
         turnLeft(main_rocket, spaceObjects);
@@ -176,20 +180,16 @@ function animate() {
         turnRight(main_rocket, spaceObjects);
     }
 
-    if (accelerateButtons.down.isPressed) {
-        accelerateDown(main_rocket, spaceObjects);
-    }
-
     gravitate_rocketToObjects(main_rocket, spaceObjects);
 
     main_rocket.move(spaceObjects);
 
-    for (let i = 0; i < spaceObjects.length; i++) {
+    // display
+    main_rocket.displayBackground(); // background stars
+    for (let i = 0; i < spaceObjects.length; i++) { // objects
         spaceObjects[i].display();
     }
-
-
-    main_rocket.display();
+    main_rocket.display(); // rocket
 
     updateMinimap(); // Update the minimap content
 

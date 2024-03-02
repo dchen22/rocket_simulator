@@ -1,5 +1,5 @@
 import { ORI, ORI_X, ORI_Y } from '../display/DisplayMethods.js';
-import { ctx, canvas, fps, throttleSlider } from '../js/script.js';
+import { ctx, canvas, fps, throttleSlider, thrusterToggle } from '../js/script.js';
 import { magnitude, checkCollide } from '../maths/MathFunctions.js';
 import { drawCircle } from '../display/DisplayMethods.js';
 import { Background } from './Background.js';
@@ -58,11 +58,6 @@ export class Rocket {
     
 
     display() {
-        this.displayBackground();
-        // const rocketImage = document.getElementById('rocket_image');
-        // rocketImage.src = '../rocket/rocket.png';
-        // ctx.drawImage(rocketImage, ORI_X(0) - rocketImage.clientWidth/2, ORI_Y(0) - rocketImage.clientHeight/2);
-
         // Set the center of the canvas as (0, 0)
         const centerX = ORI_X(0);
         const centerY = ORI_Y(0);
@@ -130,13 +125,16 @@ export class Rocket {
         }
     }
 
-    accelerateUp(spaceObjects) {
-        this.currentAcceleration += this.jerk;
-        if (this.currentAcceleration > this.getStats().MAX_ACCELERATION) {
-            this.currentAcceleration = this.getStats().MAX_ACCELERATION;
+    accelerateUp(spaceObjects, toggleOn) {
+        // if thrusters are toggled on
+        if (toggleOn) {
+            this.currentAcceleration += this.jerk;
+            if (this.currentAcceleration > this.getStats().MAX_ACCELERATION) {
+                this.currentAcceleration = this.getStats().MAX_ACCELERATION;
+            }
+            this.velocity.y -= this.currentAcceleration;
+            this.turnVelocity *= 0.95; // stabilize spin when accelerating
         }
-        this.velocity.y -= this.currentAcceleration;
-        this.turnVelocity *= 0.95; // stabilize spin when accelerating
     }
 
     turnLeft(spaceObjects) {
@@ -147,14 +145,11 @@ export class Rocket {
         this.turnVelocity -= this.turnAcceleration;
     }
 
-    // remove this and its button later
-    accelerateDown(spaceObjects) {
-        // this.velocity.y += this.ACCELERATION;
-        console.log("can't go backwards in a rocket :(");
-    }
 
     move(spaceObjects) {
-        console.log("VELOCITY: " + magnitude(this.velocity) * fps + "m/s");
+        this.accelerateUp(spaceObjects, thrusterToggle);
+        // the 60 is arbitrary I guess
+        console.log("VELOCITY: " + magnitude(this.velocity) * 60 + "m/s");
         this.shiftOtherObjects(spaceObjects);
         this.rotateOtherObjects(spaceObjects);
         for (let i = 0; i < spaceObjects.length; i++) {

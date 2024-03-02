@@ -47,7 +47,6 @@ function reverseVelocity(rocket) {
 // check if rocket is colliding with any objects
 export function checkCollide(rocket, object) {
     for (let i = 0; i < rocket.hitboxPoints.length; i++) {
-        console.log(object.isSolid);
         if (object.isSolid && Math.sqrt(Math.pow(rocket.hitboxPoints[i][0] - object.x, 2) + Math.pow(rocket.hitboxPoints[i][1] - object.y, 2)) < object.radius) {
             
             // if the rocket is inside the SOLID object then teleport it to the closest edge

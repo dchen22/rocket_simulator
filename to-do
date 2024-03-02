@@ -1,0 +1,4 @@
+- background stars are shown on top of planets (bad)
+- thruster trail shifts adjusting throttle
+    - maybe add option to keep thruster on/off instead of up/down keys
+    - thruster should fade MUCH faster after turning off thruster (like real rockets)

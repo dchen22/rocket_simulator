@@ -31,19 +31,22 @@
     gap: 10px;
 }
 
+#accelerate_button_container button {
+    justify-self: center; /* Center horizontally */
+    align-self: center; /* Center vertically */
+}
+
 #turn_left {
     grid-column: 2;
     grid-row: 2;
+    height: 20px;
 }
 
 #accelerate_up {
     grid-column: 3;
-    grid-row: 1;
-}
-
-#accelerate_down {
-    grid-column: 3;
-    grid-row: 3;
+    grid-row: 2;
+    width: 40px;
+    height: 40px;
 }
 
 #turn_right {
