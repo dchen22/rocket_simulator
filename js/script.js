@@ -43,7 +43,6 @@ canvas.addEventListener('mousemove', function(event) {
 });
 
 throttleSlider.addEventListener('input', function() {
-    console.log("throttle: ", throttleSlider.value);
 });
 
 
@@ -165,18 +164,6 @@ turnControlButtons.right.addEventListener('mouseup', function() {
 toggleThrusterButton.addEventListener('mouseup', function() {
     thrusterToggle = !thrusterToggle;
 });
-
-
-function accUp_changeStyle(up_button, toggle) {
-    // toggle is the current state of the button
-    if (toggle) {
-        up_button.style.backgroundColor = 'green';
-        up_button.textContent = '⚡'
-    } else {
-        up_button.style.backgroundColor = 'white';
-    }
-
-}
 
 
 // continuous animation
