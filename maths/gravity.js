@@ -1,11 +1,13 @@
 import { checkCollide } from "./MathFunctions.js";
 
+var GRAV_CONST = 0.001; // gravitational constant
+
 export function gravitate_objectToObject(object1, object2) {
     // Calculate the distance between the two objects
     let distance = Math.sqrt(Math.pow(object1.x - object2.x, 2) + Math.pow(object1.y - object2.y, 2));
 
     // Calculate the force of gravity
-    let force = 2000000 * (object1.mass * object2.mass) / Math.pow(distance, 2);
+    let force = 200 * (object1.mass * object2.mass) / Math.pow(distance, 2);
 
     // Calculate the direction of the force
     let direction = Math.atan2(object2.y - object1.y, object2.x - object1.x);
@@ -30,7 +32,7 @@ export function gravitate_rocketToObject(rocket, spaceObjects) {
         let distance = Math.sqrt(Math.pow(spaceObjects[i].x - 0, 2) + Math.pow(spaceObjects[i].y - 0, 2)); // distance from object to rocket
         
         // force of gravity (reaches maximum at 1/5 of the radius of the object)
-        let force = 0.01 * (spaceObjects[i].mass * rocket.mass) / Math.pow(distance + spaceObjects[i].radius / 5, 2);
+        let force = GRAV_CONST * (spaceObjects[i].mass * rocket.mass) / Math.pow(distance + spaceObjects[i].radius / 5, 2);
         let direction = Math.atan2(0 - spaceObjects[i].y, 0 - spaceObjects[i].x); // direction of gravity
         let acceleration = force / rocket.mass; // acceleration
         let accelerationVector = {x: -acceleration * Math.cos(direction), y: -acceleration * Math.sin(direction)}; // acceleration vector

@@ -1,26 +1,31 @@
 import { ORI, ORI_X, ORI_Y } from '../display/DisplayMethods.js';
-import { ctx, canvas } from '../js/script.js';
+import { ctx, canvas, fps } from '../js/script.js';
 import { magnitude, checkCollide } from '../maths/MathFunctions.js';
 import { drawCircle } from '../display/DisplayMethods.js';
 import { Background } from './Background.js';
 
+
+
 export class Rocket {
-    constructor(x, y) {
+    constructor(x, y, acceleration_coefficient) {
+        // acceleration_coefficient is used to make sure that other aspects of the rocket scale well with
+        // the rocket's power
+
         // PERFORMANCE
-        this.jerk = 0.01; // ROCKET POWER
+        this.jerk = 0.1 * acceleration_coefficient; // ROCKET POWER (THIS DETERMINES HOW FAST ROCKET SPEEDS UP)
         this.currentAcceleration = 0; // current thruster power
-        this.MAX_ACCELERATION = 0.2; // cap on thruster power
+        this.MAX_ACCELERATION = acceleration_coefficient; // cap on thruster power  (THIS DETERMINES MAXIMUM ACCELERATION OF ROCKET)
         this.velocity = {x: 0, y: 0};
         this.mass = 1000; // mass of rocket
         this.spaceDragCoefficient = 0.999; // determines drag in space (aerodynamics of rocket)
 
         this.turnVelocity = 0;
-        this.maxTurnVelocity = 0.01; // nice to have so it doesn't spin out of control
+        this.maxTurnVelocity = 0.005; // nice to have so it doesn't spin out of control
         this.turnAcceleration = 0.0001;
         this.turnOrientationDragCoefficient = 0.999; // determines rotational drag in space
 
         // VISUALS
-        this.thrusterLengthCoefficient = 40; // determines length of thruster trail
+        this.thrusterLengthCoefficient = 8 / acceleration_coefficient; // determines length of thruster trail
 
         // we check if any of the hitboxpoints land inside of another object to determine whether they collide
         // this.hitboxPoints = [[ORI_X(0) - 10, ORI_Y(0) + 20], [ORI_X(0) + 10, ORI_Y(0) + 20], [ORI_X(0) + 10, ORI_Y(0) - 20], [ORI_X(0) - 10, ORI_Y(0) - 20], [ORI_X(0), ORI_Y(0) - 40]]
@@ -107,6 +112,7 @@ export class Rocket {
             this.currentAcceleration = this.MAX_ACCELERATION;
         }
         this.velocity.y -= this.currentAcceleration;
+        this.turnVelocity *= 0.95; // stabilize spin when accelerating
     }
 
     turnLeft(spaceObjects) {
@@ -124,7 +130,7 @@ export class Rocket {
     }
 
     move(spaceObjects) {
-        console.log("VELOCITY: " + magnitude(this.velocity));
+        console.log("VELOCITY: " + magnitude(this.velocity) * fps + "m/s");
         this.shiftOtherObjects(spaceObjects);
         this.rotateOtherObjects(spaceObjects);
         for (let i = 0; i < spaceObjects.length; i++) {
