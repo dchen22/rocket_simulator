@@ -142,41 +142,52 @@ function getNearbyObjects(centerObject, objects, radius) {
     });
 }
 
-const accelerateButtons = {
-    up: document.getElementById('accelerate_up'),
+const turnControlButtons = {
     left: document.getElementById('turn_left'),
     right: document.getElementById('turn_right'),
 };
+const toggleThrusterButton = document.getElementById('toggleThruster_switch');
 
 // Set up event listeners for mousedown and mouseup events
-accelerateButtons.left.addEventListener('mousedown', function() {
-    accelerateButtons.left.isPressed = true;
+turnControlButtons.left.addEventListener('mousedown', function() {
+    turnControlButtons.left.isPressed = true;
 });
-accelerateButtons.left.addEventListener('mouseup', function() {
-    accelerateButtons.left.isPressed = false;
+turnControlButtons.left.addEventListener('mouseup', function() {
+    turnControlButtons.left.isPressed = false;
 });
-// Add event listeners for the right button
-accelerateButtons.right.addEventListener('mousedown', function() {
-    accelerateButtons.right.isPressed = true;
+turnControlButtons.right.addEventListener('mousedown', function() {
+    turnControlButtons.right.isPressed = true;
 });
-accelerateButtons.right.addEventListener('mouseup', function() {
-    accelerateButtons.right.isPressed = false;
+turnControlButtons.right.addEventListener('mouseup', function() {
+    turnControlButtons.right.isPressed = false;
 });
 
-accelerateButtons.up.addEventListener('mouseup', function() {
+toggleThrusterButton.addEventListener('mouseup', function() {
     thrusterToggle = !thrusterToggle;
 });
+
+
+function accUp_changeStyle(up_button, toggle) {
+    // toggle is the current state of the button
+    if (toggle) {
+        up_button.style.backgroundColor = 'green';
+        up_button.textContent = '⚡'
+    } else {
+        up_button.style.backgroundColor = 'white';
+    }
+
+}
 
 
 // continuous animation
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (accelerateButtons.left.isPressed) {
+    if (turnControlButtons.left.isPressed) {
         turnLeft(main_rocket, spaceObjects);
     }
 
-    if (accelerateButtons.right.isPressed) {
+    if (turnControlButtons.right.isPressed) {
         turnRight(main_rocket, spaceObjects);
     }
 
@@ -200,7 +211,7 @@ function animate() {
     }
     times.push(now);
     fps = times.length;
-    console.log("fps:", fps);
+    // console.log("fps:", fps);
 
     requestAnimationFrame(animate);
 }

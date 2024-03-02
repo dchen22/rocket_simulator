@@ -17,11 +17,17 @@
         <input type="range" id="slider" min="0" max="250" value="100" step="1" orient="vertical">
     </div>
 
+
     <div id="accelerate_button_container">
-        <button id="accelerate_up">⚡</button>
+        <button id="accelerate_up" class="transparent-button">⚡</button>
         <button id="turn_left">←</button>
         <button id="turn_right">→</button>
     </div>
+
+    <label class="switch" id="toggleThruster_switch">
+        <input type="checkbox">
+        <span class="slider"></span>
+      </label>
 
     <img id="rocket_image" src="./rocket/rocket.png" alt="idk">
     <canvas id="minimap_canvas"></canvas>

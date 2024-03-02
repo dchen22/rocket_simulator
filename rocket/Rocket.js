@@ -149,7 +149,7 @@ export class Rocket {
     move(spaceObjects) {
         this.accelerateUp(spaceObjects, thrusterToggle);
         // the 60 is arbitrary I guess
-        console.log("VELOCITY: " + magnitude(this.velocity) * 60 + "m/s");
+        // console.log("VELOCITY: " + magnitude(this.velocity) * 60 + "m/s");
         this.shiftOtherObjects(spaceObjects);
         this.rotateOtherObjects(spaceObjects);
         for (let i = 0; i < spaceObjects.length; i++) {
@@ -169,7 +169,7 @@ export class Rocket {
     }
 
     rotateOtherObjects(spaceObjects) {
-        console.log("turn velocity: " + this.turnVelocity)
+        // console.log("turn velocity: " + this.turnVelocity)
 
         this.turnVelocity *= this.turnOrientationDragCoefficient;
         if (this.turnVelocity > this.maxTurnVelocity) {
