@@ -69,3 +69,11 @@ export function checkCollide(rocket, object) {
         }
     }
 }
+
+export function bound(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+}
+
+export function map_range(value, originalmin, originalmax, newmin, newmax) {
+    return newmin + (newmax - newmin) * (value - originalmin) / (originalmax - originalmin);
+}

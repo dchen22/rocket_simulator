@@ -188,6 +188,7 @@ function animate() {
         spaceObjects[i].display();
     }
     main_rocket.display(); // rocket
+    main_rocket.printStats();
 
     updateMinimap(); // Update the minimap content
 
@@ -198,7 +199,6 @@ function animate() {
     }
     times.push(now);
     fps = times.length;
-    // console.log("fps:", fps);
 
     requestAnimationFrame(animate);
 }
