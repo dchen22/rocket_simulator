@@ -11,6 +11,12 @@
     <canvas id="canvas1"></canvas>
     <script type="module" src="/js/script.js"></script> 
 
+    <!-- Vertical slider container -->
+    <div id="throttle_slider">
+        <!-- Vertical slider; value goes from 0 to 200 so we can get more power -->
+        <input type="range" id="slider" min="0" max="200" value="50" step="1" orient="vertical">
+    </div>
+
     <div id="accelerate_button_container">
         <button id="accelerate_up">↑</button>
         <button id="turn_left">←</button>

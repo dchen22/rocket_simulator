@@ -1,5 +1,5 @@
 import { ORI, ORI_X, ORI_Y } from '../display/DisplayMethods.js';
-import { ctx, canvas, fps } from '../js/script.js';
+import { ctx, canvas, fps, throttleSlider } from '../js/script.js';
 import { magnitude, checkCollide } from '../maths/MathFunctions.js';
 import { drawCircle } from '../display/DisplayMethods.js';
 import { Background } from './Background.js';
@@ -32,6 +32,30 @@ export class Rocket {
         this.hitboxPoints = [[0, 0]]
         this.background = new Background();
     }
+
+    // we use this when we want to modify the rocket's power temporarily (e.g. increase throttle)
+    // btw we could try the idea of slowing down time as an ability
+    // we can add to the list of returned stats if needed (or make a new function)
+    getStats() {
+        // these should only return permanent/long-term stats (i.e. ones that aren't volatile, like current velocity)
+        let throttle = throttleSlider.value / 100;
+        return {
+            jerk: this.jerk * throttle,
+            MAX_ACCELERATION: this.MAX_ACCELERATION * throttle,
+            spaceDragCoefficient: this.spaceDragCoefficient,
+            maxTurnVelocity: this.maxTurnVelocity,
+            turnAcceleration: this.turnAcceleration,
+            turnOrientationDragCoefficient: this.turnOrientationDragCoefficient,
+            // bound thruster length coeff so that thruster trail is not too long nor too short
+            // if the interval contains larger values then the thruster trail will be shorter
+            thrusterLengthCoefficient: this.thrusterLengthCoefficient / this._bound(throttle, 0.8, 1.2),
+        }
+    }
+
+    _bound(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+    
 
     display() {
         this.displayBackground();
@@ -80,7 +104,7 @@ export class Rocket {
         const orangeColor = 'orange';
         const yellowColor = 'yellow';
 
-        const speedMagnitude = Math.abs(this.currentAcceleration) * this.thrusterLengthCoefficient; // Adjust based on velocity
+        const speedMagnitude = Math.abs(this.currentAcceleration) * this.getStats().thrusterLengthCoefficient; // Adjust based on velocity
 
         for (let i = 0; i < 10; i++) {
             drawCircle(centerX, centerY + 20*(i+1)*speedMagnitude/6, Math.max(0, speedMagnitude * 2 - 2*i), orangeColor, orangeColor);
@@ -108,8 +132,8 @@ export class Rocket {
 
     accelerateUp(spaceObjects) {
         this.currentAcceleration += this.jerk;
-        if (this.currentAcceleration > this.MAX_ACCELERATION) {
-            this.currentAcceleration = this.MAX_ACCELERATION;
+        if (this.currentAcceleration > this.getStats().MAX_ACCELERATION) {
+            this.currentAcceleration = this.getStats().MAX_ACCELERATION;
         }
         this.velocity.y -= this.currentAcceleration;
         this.turnVelocity *= 0.95; // stabilize spin when accelerating

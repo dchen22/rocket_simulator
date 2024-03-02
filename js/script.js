@@ -13,6 +13,7 @@ export const minimapWidth = 200; // minimap width
 export const minimapHeight = 200; // minimap height
 export const minimapEdgeWidth = 2; // minimap edge width
 
+export const throttleSlider = document.getElementById('slider'); // control rocket throttle
 
 // make sure canvas fills up the entire page
 canvas.width = window.innerWidth; 
@@ -38,6 +39,10 @@ canvas.addEventListener('click', function(event) {
 canvas.addEventListener('mousemove', function(event) {
     mouse.x = event.x;
     mouse.y = event.y;
+});
+
+throttleSlider.addEventListener('input', function() {
+    console.log("throttle: ", throttleSlider.value);
 });
 
 
