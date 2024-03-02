@@ -48,7 +48,7 @@ export class Rocket {
             turnOrientationDragCoefficient: this.turnOrientationDragCoefficient,
             // bound thruster length coeff so that thruster trail is not too long nor too short
             // if the interval contains larger values then the thruster trail will be shorter
-            thrusterLengthCoefficient: this.thrusterLengthCoefficient / this._bound(throttle, 0.8, 1.2),
+            thrusterLengthCoefficient: this.thrusterLengthCoefficient / this._bound(throttle, 1, 1.9),
         }
     }
 
